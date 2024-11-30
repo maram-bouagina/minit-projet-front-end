@@ -22,36 +22,31 @@ myForm!: FormGroup;
   ) { }
   
   ngOnInit() : void {
-    this.genres = this.livreService.listegenres();
+  
+ 
+    this.livreService.listegenres().
+    subscribe(gens=> {this.genres = gens._embedded.genres;;
+    console.log(gens);
+    });
     this.myForm = this.formBuilder.group({
 
-      idlivre : ['', [Validators.required]],
+      //idlivre : ['', [Validators.required]],
       titre : ['', [Validators.required, Validators.minLength(6)]],
       auteur : ['', [Validators.required, Validators.minLength(6)]],
       nbpages : ['', [Validators.required]],
-      email: ['', [Validators.email, Validators.required]],
+      //email: ['', [Validators.email, Validators.required]],
       datepublication: ['', [Validators.required]],
-      idgenre : ['', [Validators.required]]
+idgenre : ['', [Validators.required]]
       } );
       
     }
   addlivre(){
-    console.log(this.newIdgenre);
-    /* this. newlivre.idlivre = this.myForm.value.idlivre;
-    this. newlivre.titre = this.myForm.value.titre;
-    this. newlivre.auteur = this.myForm.value.auteur;
-    this. newlivre.nbpages = this.myForm.value.nbpages; 
-    this. newlivre.email = this.myForm.value.email;
-    this. newlivre.datepublication = this.myForm.value.datepublication; */
-    //this. newlivre.genre = this.livreService.consultergenre(this.myForm.value.idgenre);
-
-    this.newgenre=this.livreService.consultergenre(this.newIdgenre);
-    this.newlivre.genre=this.newgenre;
-    this.livreService.ajouterlivre(this.newlivre);
+    this.newlivre.genre = this.genres.find(gen => gen.idgenre == this.newIdgenre)!
+    this.livreService.ajouterlivre(this.newlivre).subscribe(liv => {console.log(liv);
     this.message="Livre"+this.newlivre.titre+" est ajouté avec succès!";
     this.router.navigate(['livres']);
-    }
-
-  }
+     }); 
+     
+  }}
 
 

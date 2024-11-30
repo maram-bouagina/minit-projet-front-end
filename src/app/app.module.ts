@@ -12,6 +12,7 @@ import { RechercheParTitreComponent } from './recherche-par-titre/recherche-par-
 import { SearchFilterPipe } from './search-filter.pipe';
 import { LoginComponent } from './login/login.component';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ForbiddenComponent } from './forbidden/forbidden.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [
     provideClientHydration()

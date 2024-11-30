@@ -13,8 +13,10 @@ export class RechercheParTitreComponent  implements OnInit {
   searchTerm!: string;
   constructor(private livreService:LivreService){}
   ngOnInit(): void {
-    this.livres=this.livreService.listelivres() ;
-   
+    this.livreService.listelivres().subscribe(livs => {
+      console.log(livs);
+      this.livres = livs;
+      });
     }
     onKeyUp(filterText : string){
       this.livres = this.alllivres.filter(item =>

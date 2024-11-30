@@ -13,17 +13,18 @@ Idgenre! : number;
 genres! : Genre[];
     constructor(private livreService:LivreService){}
   ngOnInit(): void {
-    this.genres=this.livreService.listegenres();
+   // this.genres=this.livreService.listegenres();
     this.livres=[];
   }
   onChange() { 
-    this.livres= this.livreService.rechercherParGenre(this.Idgenre); }
+   // this.livres= this.livreService.rechercherParGenre(this.Idgenre); 
+   }
      
-    supprimerLivre(l: Livre)
+   /* supprimerLivre(l: Livre)
     {
     //console.log(l);
     let conf = confirm("Etes-vous sûr ?");
     if (conf)
     this.livreService.supprimerLivre(l);
-    }
+    }*/
 }

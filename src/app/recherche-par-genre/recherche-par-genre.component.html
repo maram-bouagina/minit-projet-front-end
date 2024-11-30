@@ -20,7 +20,7 @@
                    <td>{{livre.nbpages}}</td>
                    <td>{{livre.datepublication | date :'dd/MM/yyyy'}}</td>
                    <td>{{livre.genre.nomgenre}}</td>
-                   <td><a class="btn btn-danger" (click)="supprimerLivre(livre)">Supprimer</a></td>
+                  <!-- < td><a class="btn btn-danger" (click)="supprimerlivre(livre)">Supprimer</a></td> -->
                    <td><a class="btn btn-success" [routerLink]="['/updatelivre',livre.idlivre]">Modifier</a></td>
                  </tr>
                  

@@ -5,7 +5,7 @@ export class Livre{
     titre! : string;
     auteur! : string;
     nbpages! : number;
-    email!: string ;
+   // email!: string ;
     datepublication! : Date;
     genre! : Genre;
 }

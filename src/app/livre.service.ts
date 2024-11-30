@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Livre } from './model/livre.model';
 import { Genre } from './model/genre.model';
-
+import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { GenreWrapper } from './model/genreWrapped.model';
+const httpOptions = {
+  headers: new HttpHeaders( {'Content-Type': 'application/json'} )
+};
 
 @Injectable({
   providedIn: 'root'
@@ -10,47 +15,40 @@ import { Genre } from './model/genre.model';
 
 export class LivreService {
  
+  apiURL: string = 'http://localhost:8081/livres/api';
+  apiURLgen: string = 'http://localhost:8081/livres/gen';
 
- livres : Livre[];
+
+ livres! : Livre[];
  livre! : Livre;
  genres! : Genre[];
  livresRecherche!: Livre[];
 
-  constructor() {
-    this.genres = [ {idgenre : 1, nomgenre : "fantasy"},
-      {idgenre : 2, nomgenre : "fantasy-romance"}];
-    this.livres = [
+  constructor(private http : HttpClient) {
+   /*  this.genres = [ {idgenre : 1, nomgenre : "fantasy"},
+    {idgenre : 2, nomgenre : "fantasy-romance"}]; */
+    /* this.livres = [
       {idlivre : 1,titre : "Eragon", auteur :"Christopher Paolini", nbpages :503 , email:"johndoe@gmail.com" , datepublication : new Date("05/08/2003"),genre : {idgenre: 1, nomgenre : "fantasy"}},
       {idlivre : 2,titre :"ACOTAR", auteur : "SARAHj.MAAS",nbpages : 498,email:"contact@protonmail.com",datepublication : new Date("05/05/2015"),genre : {idgenre : 2, nomgenre : "fantasy-romance"}},
       {idlivre : 3,titre :"fourth wing", auteur : "REBBECA YARROS", nbpages : 419,email:"janedoe@yahoo.fr" ,datepublication : new Date("02/05/2023"),genre: {idgenre : 1, nomgenre : "fantasy-romance"}}
-       ];
+       ];*/
     }
-  listelivres():Livre[] {
-    return this.livres;
-  }
 
-  ajouterlivre( l: Livre){
-  this.livres.push(l);
-  }
-  supprimerLivre( liv: Livre){
-    //supprimer le produit prod du tableau produits
-    const index = this.livres.indexOf(liv, 0);
-    if (index > -1) {
-    this.livres.splice(index, 1);
+  listelivres(): Observable<Livre[]>{
+    return this.http.get<Livre[]>(this.apiURL);
     }
-    //ou Bien
-    /* this.produits.forEach((cur, index) => {
-    if(prod.idProduit === cur.idProduit) {
-    this.produits.splice(index, 1);
+  ajouterlivre( liv: Livre):Observable<Livre>{
+    return this.http.post<Livre>(this.apiURL,liv, httpOptions);
     }
-    }); */
+    supprimerlivre(id : number) {
+      const url = `${this.apiURL}/${id}`;
+      return this.http.delete(url, httpOptions);
+      }
+ 
+  consulterlivre(id: number): Observable<Livre> {
+    const url = `${this.apiURL}/${id}`;
+    return this.http.get<Livre>(url);
     }
-    consulterlivre(id:number): Livre{
-      this.livre = this.livres.find(p => p.idlivre == id)!;
-      //console.log(this.livre);
-      return this.livre;
-      
-  }
   trierlivres(){
     this.livres = this.livres.sort((n1,n2) => {
     if (n1.idlivre! > n2.idlivre!) {
@@ -64,16 +62,18 @@ export class LivreService {
     }
   updatelivre(l:Livre)
     {
-    // console.log(l);
-    this.supprimerLivre(l);
-    this.ajouterlivre(l);
-    this.trierlivres();
+      return this.http.put<Livre>(this.apiURL, l, httpOptions);
 
     }
-    listegenres():Genre[] {
-      return this.genres;
-      }
-      consultergenre(id:number): Genre{ 
+  /*
+      listegenres():Observable<Genre[]>{
+      return this.http.get<Genre[]>(this.apiURL+"/gen");
+      }*/
+      listegenres():Observable<GenreWrapper>{
+        return this.http.get<GenreWrapper>(this.apiURLgen);
+        }
+        
+      /*consultergenre(id:number): Genre{ 
       return this.genres.find(gen => gen.idgenre == id)!;
       }
       rechercherParGenre(idgenre: number): Livre[]{ 
@@ -85,7 +85,7 @@ export class LivreService {
         } 
         }); 
         return this.livresRecherche; 
-        }
+        } */
         
     
 }

@@ -26,38 +26,52 @@ loading : boolean = false;
       constructor(private activatedRoute: ActivatedRoute,
         private router :Router,
       private livreService: LivreService,private formBuilder: FormBuilder) { }
+    ngOnInit() {
+      const idLivre = this.activatedRoute.snapshot.params['id'];
+      console.log('ID du livre récupéré :', idLivre);
+      this.livreService.listegenres().
+      subscribe(gens => {this.genres = gens._embedded.genres;
+      console.log(gens);
+      });
+     
 
-      ngOnInit() {
-          // console.log(this.route.snapshot.params.id);
-          this.genres = this.livreService.listegenres();
-          this.currentlivre = this.livreService.consulterlivre(this.activatedRoute.snapshot.params['idlivre']);
-          console.log(this.currentlivre);
+      if (idLivre) {
+    
+        this.livreService.consulterlivre(idLivre).subscribe(livre => {
+          this.currentlivre = livre;
           this.updatedgenId=this.currentlivre.genre.idgenre;
-
-          this.myForm = this.formBuilder.group({
-            idlivre: [this.currentlivre.idlivre, [Validators.required]],
-            titre: [this.currentlivre.titre, [Validators.required, Validators.minLength(6)]],
-            auteur: [this.currentlivre.auteur, [Validators.required, Validators.minLength(6)]],
-            nbpages: [this.currentlivre.nbpages, [Validators.required]],
-            email: [this.currentlivre.email, [Validators.email, Validators.required]],
-            datepublication: [this.currentlivre.datepublication, [Validators.required]],
-            idgenre: [this.currentlivre.genre.idgenre, [Validators.required]]
+          if (this.currentlivre) {
+            console.log('Livre récupéré :', this.currentlivre);
+    
+           
+            this.myForm = this.formBuilder.group({
+              idlivre: [this.currentlivre.idlivre, [Validators.required]],
+              titre: [this.currentlivre.titre, [Validators.required, Validators.minLength(6)]],
+              auteur: [this.currentlivre.auteur, [Validators.required, Validators.minLength(6)]],
+              nbpages: [this.currentlivre.nbpages, [Validators.required]],
+              datepublication: [this.currentlivre.datepublication, [Validators.required]],
+               idgenre: [this.currentlivre.genre.idgenre, [Validators.required]]
+            });
+          } else {
+            console.error('Le livre récupéré est vide');
+          }
+        }, error => {
+          console.error('Erreur lors de la récupération du livre:', error);
         });
+      } else {
+        console.error('ID du livre est invalide');
+      }
     }
+    
+    
       
       updatelivre(){
-        //console.log(this.currentlivre);
- /*         this.currentlivre.idlivre = this.myForm.value.idlivre;
-        this.currentlivre.titre = this.myForm.value.titre;
-        this.currentlivre.auteur = this.myForm.value.auteur;
-        this.currentlivre.nbpages = this.myForm.value.nbpages; 
-        this.currentlivre.email = this.myForm.value.email;
-        this.currentlivre.datepublication = this.myForm.value.datepublication; */
-        this.currentlivre.genre = this.livreService.consultergenre(this.myForm.value.idgenre);
- 
-          this.livreService.updatelivre(this.currentlivre);
-          this.router.navigate(['livres']);
-          this.currentlivre.genre=this.livreService.consultergenre(this.updatedgenId);
-    
+
+        this.currentlivre.genre = this.genres.
+        find(gen => gen.idgenre == this.updatedgenId)!;
+         this.livreService.updatelivre(this.currentlivre).subscribe(liv => {
+          this.router.navigate(['livres']); }
+          );
+          
       } 
  }
